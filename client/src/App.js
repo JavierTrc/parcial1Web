@@ -8,19 +8,22 @@ class App extends Component {
   constructor(props){
     super(props);
     this.onNewUser.bind(this);
+    this.state = {
+      followers:[];
+    }
   }
 
   onNewUser(user){
     fetch("/followers/" + user, function(response){
-      
-    })
+
+    });
   }
 
   render() {
     return (
       <div>
         <UserInput handleSubmit={this.onNewUser} />
-        <ListFollowers handleSubmit={this.onNewUser} />
+        <ListFollowers handleSubmit={this.onNewUser} followers=/>
       </div>
     );
   }
