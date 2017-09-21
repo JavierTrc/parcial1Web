@@ -23,7 +23,7 @@ class ListFollowers extends Component {
 }
 
 ListFollowers.propTypes {
-	handleNewUser: PropTypes.func.isRequired
+	handleSubmit: PropTypes.func.isRequired
 }
 
 export default ListFollowers;
