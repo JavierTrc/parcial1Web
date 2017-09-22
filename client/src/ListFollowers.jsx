@@ -4,26 +4,32 @@ import PropTypes from 'prop-types';
 class ListFollowers extends Component {
 	constructor(props){
 		super(props);
-		this.onClick.bind(this);
+		this.onClick = this.onClick.bind(this);
 	}
 
-	onClick(event){
-		this.props.handleNewUser();
+	onClick(user){
+		this.props.handleNewUser(user, false, undefined);
 	}
 
 	render(){
 		return (
-			<ul>
-				{return this.props.followers.map(follower => {
-					<li><button onClick={this.onClick}>{follower.login}</button></li>
+			<div className="row">
+				{this.props.followers.map(follower => {
+					let alt = "Image of "+ follower.login;
+					return (<div className="card col-md-4 mb-4 mx-auto" onClick={() => this.onClick(follower.login)} key={follower.id}>
+							<img className="card img-top img-fluid" src={follower.avatar_url} alt={alt}></img>
+							<div className="card-block">
+								<h4 className="card-title">{follower.login}</h4>
+							</div>
+						</div>);
 				})}
-			</ul>
+			</div>
 		);
 	}
 }
 
-ListFollowers.propTypes {
-	handleSubmit: PropTypes.func.isRequired
+ListFollowers.propTypes = {
+	handleNewUser: PropTypes.func.isRequired
 }
 
 export default ListFollowers;
