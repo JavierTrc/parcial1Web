@@ -8,10 +8,23 @@ class App extends Component {
   constructor(props){
     super(props);
     this.onNewUser = this.onNewUser.bind(this);
+    this.onPopular = this.onPopular.bind(this);
     this.state = {
-      followers:[],
+      users:[],
       history: []
     };
+  }
+
+  onPopular(){
+    fetch("/followers/6").then((response) => {
+      console.log("entered popular fetch")
+      var responseData = response.json();
+      responseData.then((data)=>{
+        let popular = data.data;
+        this.setState({users:popular,
+          history:[]});
+      });
+    });
   }
 
   onNewUser(user, newSearch, userToGoBack){
@@ -30,7 +43,7 @@ class App extends Component {
             history.splice(history.lastIndexOf(userToGoBack) + 1);
           }
         }
-        this.setState({followers:followers,
+        this.setState({users:followers,
           history:history});
       });
     });
@@ -40,11 +53,11 @@ class App extends Component {
     return (
       <div className="container main">
         <nav className="navbar navbar-light bg-light">
-          <a className="navbar-brand">GitFollow</a>
-          <UserInput className="my-2 my-lg-0" handleSubmit={this.onNewUser} />
+          <a className="navbar-brand" href="">GitFollow</a>
+          <UserInput className="my-2 my-lg-0" handleSubmit={this.onNewUser} handlePopular={this.onPopular}/>
         </nav>
         <SearcHistory handleClick={this.onNewUser} history={this.state.history} />
-        <ListFollowers handleNewUser={this.onNewUser} followers={this.state.followers}/>
+        <ListFollowers handleNewUser={this.onNewUser} followers={this.state.users} />
       </div>
     );
   }

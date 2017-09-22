@@ -16,7 +16,7 @@ class SearchHistory extends Component{
 			<nav className="breadcrumb">
 				{this.props.history.map((user, i)=>{
 					return (
-						<a className="breadcrumb-item" href="" key={i} onClick={()=>this.handleClick(user)}>{user}</a>
+						<a className="breadcrumb-item" href="#" key={i} onClick={()=>this.handleClick(user)}>{user}</a>
 					);
 				})}
 			</nav>

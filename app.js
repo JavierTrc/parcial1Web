@@ -5,6 +5,9 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
+var mongo = require("mongodb").MongoClient;
+var mongoUrl = process.env.MONGO_URL || "mongodb://localhost:27017/git_follow";
+
 var GitHubApi = require("github");
 var github = new GitHubApi({});
 
@@ -23,12 +26,52 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get("/followers/:user", function(req, res){
+	var searchedUser = req.params.user;
+	if(!searchedUser) return res.json({data:[]});
 	github.users.getFollowingForUser({
-		username: req.params.user
+		username: searchedUser
 	}, function(err, followers) {
-		res.json(followers);
+		github.users.getForUser({
+			username: searchedUser
+		}, function(err, foundUser){
+			if(foundUser.data){
+				foundUser = foundUser.data;
+				mongo.connect(mongoUrl, function(err, db){
+					var tempUser = {
+						login:searchedUser,
+						id:foundUser.id,
+						avatar_url:foundUser.avatar_url,
+						html_url:foundUser.html_url
+					};
+					db.collection("users").updateOne({login:searchedUser}, {$set: tempUser, $inc:{hits:1}}, {upsert:true}, function(err, operation){
+						if(err){
+							console.log(err);
+						}
+						db.close();
+					});
+				});
+			}
+			res.json(followers);
+		});
 	});
-})
+});
+
+app.get("/popular/:n", function(req, res){
+	console.log("Entered the popular route")
+	var n = parseInt(req.params.n);
+	mongo.connect(mongoUrl, function(err, db){
+		if(err){
+			console.log(err);
+		}
+		db.collection("users").find({}).sort({hits:-1}).limit(n).toArray(function(err, data){
+			if(err){
+				console.log(err);
+			}
+			db.close();
+			res.json({data:data});
+		});
+	});
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
