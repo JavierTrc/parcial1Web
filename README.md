@@ -2,7 +2,7 @@
 
 A small site to get the followers of a specific github user, you can go to the followers github pages.
 RESPONSIVE DESIGN (thanks to bootstrap)
-~Saving info of searches to suggest popular pages(find interesting people)
+~Saving info of searches to suggest popular pages(find interesting people)(BONUS)
 
 ## Getting Started
 
